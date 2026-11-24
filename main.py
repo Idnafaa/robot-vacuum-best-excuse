@@ -9,24 +9,26 @@ the harness sets it.
 
 import os
 
-EXCUSE = (
-    "My dustbin hit capacity on that exact crumb, "
-    "so I promoted it to roommate. Rent is due Friday."
+MAX_CHARS = 140
+
+EXCUSE_PARTS = (
+    "My dustbin hit capacity on that exact crumb, ",
+    "so I promoted it to roommate. Rent is due Friday.",
 )
 
 
-def clean_line(text):
-    """One line, no leading/trailing space, no embedded newlines."""
-    line = " ".join(text.split())
+def build_line(parts):
+    """Join the excuse parts into one clean line under the limit."""
+    line = " ".join(" ".join(parts).split())
     if not line:
         raise ValueError("excuse is empty")
-    if len(line) > 140:
-        raise ValueError(f"excuse is {len(line)} chars, over the 140 limit")
+    if len(line) > MAX_CHARS:
+        raise ValueError(f"excuse is {len(line)} chars, over the {MAX_CHARS} limit")
     return line
 
 
 def main():
-    line = clean_line(EXCUSE)
+    line = build_line(EXCUSE_PARTS)
     outdir = os.environ.get("MAKEFUN_OUTPUT_DIR", "/output")
     os.makedirs(outdir, exist_ok=True)
     path = os.path.join(outdir, "entry.txt")
